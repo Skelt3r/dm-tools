@@ -69,9 +69,9 @@ class Tracker:
         Label(win, text=prompt).pack(anchor='c', padx=5, pady=5, side='top')
 
         text_entry = Entry(win)
-        text_entry.pack(anchor='c', padx=5, pady=5, side='top')
-
         button_frame = Frame(win)
+
+        text_entry.pack(anchor='c', padx=5, pady=5, side='top')
         button_frame.pack(anchor='c', side='top')
 
         Button(button_frame, text='OK', command=ok).pack(anchor='c', padx=5, pady=5, side='left')
@@ -84,41 +84,32 @@ class Tracker:
 
     def main(self):
 
-        def dice_roller():
-            win = Toplevel(self.root, bg=self.bg_color)
-            win.geometry('800x600')
-            win.title('Dice Roller')
-            win.wm_attributes('-topmost', True)
-        
-
         def roll_dice(sides, label):
             label['text'] = randint(1, sides)
 
 
         def add_player(num):
             temp_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
-            temp_frame.pack(side='top')
 
             init_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
-            init_button.config(command=lambda b=init_button: self.set_value(b, 'Enter an initiative value', True))
-            init_button.pack(side='left')
-
             name_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width*2, font=self.button_font, text=f'Character {num}')
-            name_button.config(command=lambda b=name_button: self.set_value(b, 'Enter a character name:'))
-            name_button.pack(side='left')
-
             hp_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
-            hp_button.config(command=lambda b=hp_button: self.set_value(b, 'Enter an HP value:', True))
-            hp_button.pack(side='left')
-
             ac_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
-            ac_button.config(command=lambda b=ac_button: self.set_value(b, 'Enter an AC value:', True))
-            ac_button.pack(side='left')
-
-            notes_entry = Text(temp_frame, bd=4, relief='ridge', bg=self.bg_color, fg=self.fg_color, insertbackground=self.fg_color, padx=5, pady=5, height=self.height, width=self.width*6, font=self.button_font)
-            notes_entry.pack(side='left')
-
             x_button = Button(temp_frame, command=lambda tf=temp_frame: tf.destroy(), bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='X', padx=10, pady=5)
+            
+            notes_entry = Text(temp_frame, bd=4, relief='ridge', bg=self.bg_color, fg=self.fg_color, insertbackground=self.fg_color, padx=5, pady=5, height=self.height, width=self.width*6, font=self.button_font)
+
+            init_button.config(command=lambda b=init_button: self.set_value(b, 'Enter an initiative value', True))
+            name_button.config(command=lambda b=name_button: self.set_value(b, 'Enter a character name:'))
+            hp_button.config(command=lambda b=hp_button: self.set_value(b, 'Enter an HP value:', True))
+            ac_button.config(command=lambda b=ac_button: self.set_value(b, 'Enter an AC value:', True))
+            
+            temp_frame.pack(side='top')
+            init_button.pack(side='left')
+            name_button.pack(side='left')
+            hp_button.pack(side='left')
+            ac_button.pack(side='left')
+            notes_entry.pack(side='left')
             x_button.pack(side='left', anchor='c', padx=5)
 
             self.scrollframe.update()
@@ -139,84 +130,67 @@ class Tracker:
         self.root.configure(bg=self.bg_color)
 
         self.bg_frame = Frame(self.root, bg=self.bg_color)
-        self.bg_frame.pack(expand=True, fill='both')
-
         dice_frame = Frame(self.bg_frame, bg=self.bg_color)
-        dice_frame.pack(side='left', padx=10)
+        self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color)
+        header_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
+        button_frame = Frame(self.root, bg=self.bg_color)
 
         d20_image = ImageTk.PhotoImage(Image.open('./images/d20.png').resize((100, 100)), master=dice_frame)
+        d12_image = ImageTk.PhotoImage(Image.open('./images/d12.png').resize((100, 100)), master=dice_frame)
+        d8_image = ImageTk.PhotoImage(Image.open('./images/d8.png').resize((100, 100)), master=dice_frame)
+        d6_image = ImageTk.PhotoImage(Image.open('./images/d6.png').resize((100, 100)), master=dice_frame)
+        d4_image = ImageTk.PhotoImage(Image.open('./images/d4.png').resize((100, 100)), master=dice_frame)
+
         d20_button = Button(dice_frame, command=lambda: roll_dice(20, d20_label), bg=self.bg_color, image=d20_image)
-        d20_button.pack(pady=10)
+        d12_button = Button(dice_frame, command=lambda: roll_dice(12, d12_label), bg=self.bg_color, image=d12_image)
+        d8_button = Button(dice_frame, command=lambda: roll_dice(8, d8_label), bg=self.bg_color, image=d8_image)
+        d6_button = Button(dice_frame, command=lambda: roll_dice(6, d6_label), bg=self.bg_color, image=d6_image)
+        d4_button = Button(dice_frame, command=lambda: roll_dice(4, d4_label), bg=self.bg_color, image=d4_image)
+        
+        add_button = Button(button_frame, command=lambda: add_player(self.num_players), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Add Character', pady=5)
+        reset_button = Button(button_frame, command=lambda: reset(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Reset Initiative', pady=5)
 
         d20_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        d20_label.pack()
-
-        d12_image = ImageTk.PhotoImage(Image.open('./images/d12.png').resize((100, 100)), master=dice_frame)
-        d12_button = Button(dice_frame, command=lambda: roll_dice(12, d12_label), bg=self.bg_color, image=d12_image)
-        d12_button.pack(pady=10)
-
         d12_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        d12_label.pack()
-
-        d8_image = ImageTk.PhotoImage(Image.open('./images/d8.png').resize((100, 100)), master=dice_frame)
-        d8_button = Button(dice_frame, command=lambda: roll_dice(8, d8_label), bg=self.bg_color, image=d8_image)
-        d8_button.pack(pady=10)
-
         d8_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        d8_label.pack()
-
-        d6_image = ImageTk.PhotoImage(Image.open('./images/d6.png').resize((100, 100)), master=dice_frame)
-        d6_button = Button(dice_frame, command=lambda: roll_dice(6, d6_label), bg=self.bg_color, image=d6_image)
-        d6_button.pack(pady=10)
-
         d6_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        d6_label.pack()
-
-        d4_image = ImageTk.PhotoImage(Image.open('./images/d4.png').resize((100, 100)), master=dice_frame)
-        d4_button = Button(dice_frame, command=lambda: roll_dice(4, d4_label), bg=self.bg_color, image=d4_image)
-        d4_button.pack(pady=10)
-
         d4_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
+        init_label = Label(header_frame, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'Initiative')
+        name_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width*2, font=self.header_font, text=f'Name')
+        hp_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'HP')
+        ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'AC')
+        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text=f'Notes / Conditions')
+        
+        self.scrollframe = ScrollFrame(self.bg_frame)
+
+        self.bg_frame.pack(expand=True, fill='both')
+        dice_frame.pack(side='left', padx=10)
+
+        d20_button.pack(pady=10)
+        d20_label.pack()
+        d12_button.pack(pady=10)
+        d12_label.pack()
+        d8_button.pack(pady=10)
+        d8_label.pack()
+        d6_button.pack(pady=10)
+        d6_label.pack()
+        d4_button.pack(pady=10)
         d4_label.pack()
 
-        self.scrollframe = ScrollFrame(self.bg_frame)
         self.scrollframe.pack()
-
-        self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color)
         self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
-
-        header_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
         header_frame.pack(side='top', ipady=50)
-
-        init_label = Label(header_frame, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'Initiative')
         init_label.pack(side='left', anchor='s')
-
-        name_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width*2, font=self.header_font, text=f'Name')
         name_label.pack(side='left', anchor='s')
-
-        hp_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'HP')
         hp_label.pack(side='left', anchor='s')
-        
-        ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'AC')
         ac_label.pack(side='left', anchor='s')
-
-        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text=f'Notes / Conditions')
         notes_label.pack(side='left', anchor='s')
-
-        button_frame = Frame(self.root, bg=self.bg_color)
+        
         button_frame.pack(side='top', fill='x', pady=10)
-
-        dice_button = Button(button_frame, command=lambda: dice_roller(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Dice Roller', pady=5)
-        dice_button.pack(side='left', anchor='c', expand=True, fill='x')
-
-        add_button = Button(button_frame, command=lambda: add_player(self.num_players), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Add Character', pady=5)
         add_button.pack(side='left', anchor='c', expand=True, fill='x')
-
-        reset_button = Button(button_frame, command=lambda: reset(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Reset Initiative', pady=5)
         reset_button.pack(side='left', anchor='c', expand=True, fill='x')
 
-        for p in range(self.num_players):
-            add_player(p+1)
+        for p in range(self.num_players): add_player(p+1)
 
         self.root.mainloop()
     
