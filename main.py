@@ -5,17 +5,15 @@ from tkinter import Button, Canvas, Entry, Frame, Label, messagebox, Scrollbar, 
 
 class ScrollFrame(Frame):
     def __init__(self, frame, width=28):
-        self.frame = frame
         self.scrollbar = Scrollbar(frame, width=width)
         self.canvas = Canvas(frame, bg='black', yscrollcommand=self.scrollbar.set)
 
-
-    def pack(self):
         self.scrollbar.pack(side='right', fill='y', expand=False)
         self.canvas.pack(side='top', fill='both', expand=True)
+
         self.scrollbar.config(command=self.canvas.yview)
         self.canvas.bind('<Configure>', self.fill_canvas)
-        Frame.__init__(self, self.frame)
+        Frame.__init__(self, frame)
         self.windows_item = self.canvas.create_window(0, 0, window=self, anchor='nw')
 
 
@@ -131,6 +129,12 @@ class Tracker:
 
         self.bg_frame = Frame(self.root, bg=self.bg_color)
         dice_frame = Frame(self.bg_frame, bg=self.bg_color)
+
+        # Pack these before ScrollFrame to avoid issues since ScrollFrame packs automatically
+        self.bg_frame.pack(expand=True, fill='both')
+        dice_frame.pack(side='left', padx=10)
+
+        self.scrollframe = ScrollFrame(self.bg_frame)
         self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color)
         header_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
         button_frame = Frame(self.root, bg=self.bg_color)
@@ -160,11 +164,10 @@ class Tracker:
         hp_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'HP')
         ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'AC')
         notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text=f'Notes / Conditions')
-        
-        self.scrollframe = ScrollFrame(self.bg_frame)
 
-        self.bg_frame.pack(expand=True, fill='both')
-        dice_frame.pack(side='left', padx=10)
+        self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
+        header_frame.pack(side='top', ipady=50)
+        button_frame.pack(side='top', fill='x', pady=10)
 
         d20_button.pack(pady=10)
         d20_label.pack()
@@ -177,16 +180,12 @@ class Tracker:
         d4_button.pack(pady=10)
         d4_label.pack()
 
-        self.scrollframe.pack()
-        self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
-        header_frame.pack(side='top', ipady=50)
         init_label.pack(side='left', anchor='s')
         name_label.pack(side='left', anchor='s')
         hp_label.pack(side='left', anchor='s')
         ac_label.pack(side='left', anchor='s')
         notes_label.pack(side='left', anchor='s')
         
-        button_frame.pack(side='top', fill='x', pady=10)
         add_button.pack(side='left', anchor='c', expand=True, fill='x')
         reset_button.pack(side='left', anchor='c', expand=True, fill='x')
 
