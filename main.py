@@ -19,48 +19,48 @@ class Tracker:
         self.board = list()
         self.num_players = 4
         self.resolution = '1920x1080'
-    
-
-    def set_value(self, button, prompt, int_only=False):
-
-        def ok(event=None):
-            if int_only:
-                try:
-                    button.config(text=int(text_entry.get()))
-                    win.destroy()
-                except ValueError:
-                    messagebox.showerror('Integer required', 'Value must be an integer.')
-            else:
-                button.config(text=text_entry.get())
-                win.destroy()
-
-        win = Toplevel(button)
-        win.title(str())
-        win.geometry('200x100+500+500')
-        win.resizable(0, 0)
-        win.wm_attributes('-topmost', True)
-        win.wm_transient(self.root)
-
-        Label(win, text=prompt).pack(anchor='c', padx=5, pady=5, side='top')
-
-        text_entry = Entry(win)
-        button_frame = Frame(win)
-
-        text_entry.pack(anchor='c', padx=5, pady=5, side='top')
-        button_frame.pack(anchor='c', side='top')
-
-        Button(button_frame, text='OK', command=ok).pack(anchor='c', padx=5, pady=5, side='left')
-        Button(button_frame, text='Cancel', command=lambda: win.destroy()).pack(anchor='c', padx=5, pady=5, side='left')
-
-        text_entry.focus()
-        text_entry.bind('<Return>', ok)
-        text_entry.bind('<Escape>', lambda _: win.destroy())
 
 
     def main(self):
 
         def roll_dice(sides, label):
             label['text'] = randint(1, sides)
+
+
+        def set_value(button, prompt, int_only=False):
+
+            def ok(event=None):
+                if int_only:
+                    try:
+                        button.config(text=int(text_entry.get()))
+                        win.destroy()
+                    except ValueError:
+                        messagebox.showerror('Integer required', 'Value must be an integer.')
+                else:
+                    button.config(text=text_entry.get())
+                    win.destroy()
+
+            win = Toplevel(button)
+            win.title(str())
+            win.geometry('200x100+500+500')
+            win.resizable(0, 0)
+            win.wm_attributes('-topmost', True)
+            win.wm_transient(self.root)
+
+            Label(win, text=prompt).pack(anchor='c', padx=5, pady=5, side='top')
+
+            text_entry = Entry(win)
+            button_frame = Frame(win)
+
+            text_entry.pack(anchor='c', padx=5, pady=5, side='top')
+            button_frame.pack(anchor='c', side='top')
+
+            Button(button_frame, text='OK', command=ok).pack(anchor='c', padx=5, pady=5, side='left')
+            Button(button_frame, text='Cancel', command=lambda: win.destroy()).pack(anchor='c', padx=5, pady=5, side='left')
+
+            text_entry.focus()
+            text_entry.bind('<Return>', ok)
+            text_entry.bind('<Escape>', lambda _: win.destroy())
 
 
         def add_player(num):
@@ -74,10 +74,10 @@ class Tracker:
             
             notes_entry = Text(temp_frame, bd=4, relief='ridge', bg=self.bg_color, fg=self.fg_color, insertbackground=self.fg_color, padx=5, pady=5, height=self.height, width=self.width*6, font=self.button_font)
 
-            init_button.config(command=lambda b=init_button: self.set_value(b, 'Enter an initiative value', True))
-            name_button.config(command=lambda b=name_button: self.set_value(b, 'Enter a character name:'))
-            hp_button.config(command=lambda b=hp_button: self.set_value(b, 'Enter an HP value:', True))
-            ac_button.config(command=lambda b=ac_button: self.set_value(b, 'Enter an AC value:', True))
+            init_button.config(command=lambda b=init_button: set_value(b, 'Enter an initiative value', True))
+            name_button.config(command=lambda b=name_button: set_value(b, 'Enter a character name:'))
+            hp_button.config(command=lambda b=hp_button: set_value(b, 'Enter an HP value:', True))
+            ac_button.config(command=lambda b=ac_button: set_value(b, 'Enter an AC value:', True))
             
             temp_frame.pack(side='top')
             init_button.pack(side='left')
