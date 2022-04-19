@@ -18,7 +18,7 @@ class Tracker:
 
         self.board = list()
         self.num_players = 4
-        self.resolution = '1920x1080'
+        self.resolution = '1460x940'
 
 
     def main(self):
@@ -64,8 +64,34 @@ class Tracker:
 
 
         def add_player(num):
-            temp_frame = Frame(scoreboard_frame, bg=self.bg_color)
 
+            def move_up(temp_frame):
+                for row in self.board:
+                    if row[0] == temp_frame:
+                        index = self.board.index(row)
+                        if index != 0:
+                            temp_frame.pack(before=self.board[index-1][0])
+                            self.board.remove(row)
+                            self.board.insert(index-1, row)
+                            break
+            
+
+            def move_down(temp_frame):
+                for row in self.board:
+                    if row[0] == temp_frame:
+                        index = self.board.index(row)
+                        if index < len(self.board)-1:
+                            temp_frame.pack(after=self.board[index+1][0])
+                            self.board.remove(row)
+                            self.board.insert(index+1, row)
+                            break
+
+
+            temp_frame = Frame(scoreboard_frame, bg=self.bg_color)
+            arrow_frame = Frame(temp_frame, bg=self.bg_color)
+
+            up_arrow = Button(arrow_frame, command=lambda tf=temp_frame: move_up(tf), bg=self.bg_color, fg=self.fg_color, text='▲')
+            down_arrow = Button(arrow_frame, command=lambda tf=temp_frame: move_down(tf), bg=self.bg_color, fg=self.fg_color, text='▼')
             init_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
             name_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width*2, font=self.button_font, text=f'Character {num}')
             hp_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
@@ -80,6 +106,9 @@ class Tracker:
             ac_button.config(command=lambda b=ac_button: set_value(b, 'Enter an AC value:', True))
             
             temp_frame.pack(side='top')
+            arrow_frame.pack(side='left')
+            up_arrow.pack(side='top', padx=5)
+            down_arrow.pack(side='top', padx=5)
             init_button.pack(side='left')
             name_button.pack(side='left')
             hp_button.pack(side='left')
@@ -98,6 +127,8 @@ class Tracker:
                 if row[0] == temp_frame:
                     temp_frame.destroy()
                     self.board.remove(row)
+
+            scrollframe.update()
 
 
         def reset():
@@ -148,7 +179,7 @@ class Tracker:
         name_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width*2, font=self.header_font, text=f'Name')
         hp_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'HP')
         ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'AC')
-        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=51, font=self.header_font, text=f'Notes / Conditions')
+        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text=f'Notes / Conditions')
 
         scoreboard_frame.pack(anchor='c', expand=True, fill='both')
         button_frame.pack(side='top', fill='x', pady=10)
