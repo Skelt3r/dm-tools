@@ -1,30 +1,7 @@
 from PIL import Image, ImageTk
 from random import randint
-from tkinter import Button, Canvas, Entry, Frame, Label, messagebox, Scrollbar, Text, Tk, Toplevel
-
-
-class ScrollFrame(Frame):
-    def __init__(self, frame, width=28):
-        self.scrollbar = Scrollbar(frame, width=width)
-        self.canvas = Canvas(frame, bg='black', yscrollcommand=self.scrollbar.set)
-
-        self.scrollbar.pack(side='right', fill='y', expand=False)
-        self.canvas.pack(side='top', fill='both', expand=True)
-
-        self.scrollbar.config(command=self.canvas.yview)
-        self.canvas.bind('<Configure>', self.fill_canvas)
-        Frame.__init__(self, frame)
-        self.windows_item = self.canvas.create_window(0, 0, window=self, anchor='nw')
-
-
-    def fill_canvas(self, event):
-        canvas_width = event.width
-        self.canvas.itemconfig(self.windows_item, width=canvas_width)
-
-
-    def update(self):
-        self.update_idletasks()
-        self.canvas.config(scrollregion=self.canvas.bbox(self.windows_item))
+from tkinter import Button, Entry, Frame, Label, messagebox, Text, Tk, Toplevel
+from utils import ScrollFrame
 
 
 class Tracker:
@@ -93,7 +70,7 @@ class Tracker:
             name_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width*2, font=self.button_font, text=f'Character {num}')
             hp_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
             ac_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
-            x_button = Button(temp_frame, command=lambda tf=temp_frame: tf.destroy(), bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='X', padx=10, pady=5)
+            x_button = Button(temp_frame, command=lambda tf=temp_frame: remove_player(tf), bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='X', padx=10, pady=5)
             
             notes_entry = Text(temp_frame, bd=4, relief='ridge', bg=self.bg_color, fg=self.fg_color, insertbackground=self.fg_color, padx=5, pady=5, height=self.height, width=self.width*6, font=self.button_font)
 
@@ -112,9 +89,16 @@ class Tracker:
 
             self.scrollframe.update()
 
-            self.num_players = num+1
             self.board.extend([[temp_frame, init_button, name_button, hp_button, ac_button, notes_entry, x_button]])
+            self.num_players = num+1
         
+
+        def remove_player(temp_frame):
+            for row in self.board:
+                if row[0] == temp_frame:
+                    temp_frame.destroy()
+                    self.board.remove(row)
+
 
         def reset():
             for row in self.board:
@@ -122,21 +106,21 @@ class Tracker:
             
 
         self.root = Tk()
-        self.root.title('Initiative Tracker')
+        self.root.title('DM Tools')
         self.root.geometry(self.resolution)
         self.root.iconphoto(True, ImageTk.PhotoImage(file='./images/d20.png'))
         self.root.configure(bg=self.bg_color)
 
         self.bg_frame = Frame(self.root, bg=self.bg_color)
         dice_frame = Frame(self.bg_frame, bg=self.bg_color)
+        header_frame = Frame(self.bg_frame, bg=self.bg_color, padx=15)
 
-        # Pack these before ScrollFrame to avoid issues since ScrollFrame packs automatically
         self.bg_frame.pack(expand=True, fill='both')
         dice_frame.pack(side='left', padx=10)
+        header_frame.pack(side='top')
 
         self.scrollframe = ScrollFrame(self.bg_frame)
-        self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color)
-        header_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
+        self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color, pady=10)
         button_frame = Frame(self.root, bg=self.bg_color)
 
         d20_image = ImageTk.PhotoImage(Image.open('./images/d20.png').resize((100, 100)), master=dice_frame)
@@ -159,14 +143,14 @@ class Tracker:
         d8_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         d6_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         d4_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
+
         init_label = Label(header_frame, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'Initiative')
         name_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width*2, font=self.header_font, text=f'Name')
         hp_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'HP')
         ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'AC')
-        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text=f'Notes / Conditions')
+        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=51, font=self.header_font, text=f'Notes / Conditions')
 
         self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
-        header_frame.pack(side='top', ipady=50)
         button_frame.pack(side='top', fill='x', pady=10)
 
         d20_button.pack(pady=10)
