@@ -45,7 +45,7 @@ class Tracker:
             win.geometry('200x100+500+500')
             win.resizable(0, 0)
             win.wm_attributes('-topmost', True)
-            win.wm_transient(self.root)
+            win.wm_transient(root)
 
             Label(win, text=prompt).pack(anchor='c', padx=5, pady=5, side='top')
 
@@ -64,7 +64,7 @@ class Tracker:
 
 
         def add_player(num):
-            temp_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
+            temp_frame = Frame(scoreboard_frame, bg=self.bg_color)
 
             init_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=0)
             name_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width*2, font=self.button_font, text=f'Character {num}')
@@ -87,7 +87,7 @@ class Tracker:
             notes_entry.pack(side='left')
             x_button.pack(side='left', anchor='c', padx=5)
 
-            self.scrollframe.update()
+            scrollframe.update()
 
             self.board.extend([[temp_frame, init_button, name_button, hp_button, ac_button, notes_entry, x_button]])
             self.num_players = num+1
@@ -105,23 +105,23 @@ class Tracker:
                 row[1]['text'] = 0
             
 
-        self.root = Tk()
-        self.root.title('DM Tools')
-        self.root.geometry(self.resolution)
-        self.root.iconphoto(True, ImageTk.PhotoImage(file='./images/d20.png'))
-        self.root.configure(bg=self.bg_color)
+        root = Tk()
+        root.title('DM Tools')
+        root.geometry(self.resolution)
+        root.iconphoto(True, ImageTk.PhotoImage(file='./images/d20.png'))
+        root.configure(bg=self.bg_color)
 
-        self.bg_frame = Frame(self.root, bg=self.bg_color)
-        dice_frame = Frame(self.bg_frame, bg=self.bg_color)
-        header_frame = Frame(self.bg_frame, bg=self.bg_color, padx=15)
+        bg_frame = Frame(root, bg=self.bg_color)
+        dice_frame = Frame(bg_frame, bg=self.bg_color)
+        header_frame = Frame(bg_frame, bg=self.bg_color, padx=15)
 
-        self.bg_frame.pack(expand=True, fill='both')
+        bg_frame.pack(expand=True, fill='both')
         dice_frame.pack(side='left', padx=10)
         header_frame.pack(side='top')
 
-        self.scrollframe = ScrollFrame(self.bg_frame)
-        self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color, pady=10)
-        button_frame = Frame(self.root, bg=self.bg_color)
+        scrollframe = ScrollFrame(bg_frame)
+        scoreboard_frame = Frame(scrollframe, bg=self.bg_color, pady=10)
+        button_frame = Frame(root, bg=self.bg_color)
 
         d20_image = ImageTk.PhotoImage(Image.open('./images/d20.png').resize((100, 100)), master=dice_frame)
         d12_image = ImageTk.PhotoImage(Image.open('./images/d12.png').resize((100, 100)), master=dice_frame)
@@ -150,7 +150,7 @@ class Tracker:
         ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'AC')
         notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=51, font=self.header_font, text=f'Notes / Conditions')
 
-        self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
+        scoreboard_frame.pack(anchor='c', expand=True, fill='both')
         button_frame.pack(side='top', fill='x', pady=10)
 
         d20_button.pack(pady=10)
@@ -175,7 +175,7 @@ class Tracker:
 
         for p in range(self.num_players): add_player(p+1)
 
-        self.root.mainloop()
+        root.mainloop()
     
 
 if __name__ == '__main__':
