@@ -1,3 +1,4 @@
+# Oh hell yeah
 from PIL import Image, ImageTk
 from random import randint
 from tkinter import Button, Entry, Frame, Label, messagebox, Text, Tk, Toplevel
