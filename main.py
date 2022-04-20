@@ -175,11 +175,11 @@ class Tracker:
         d6_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         d4_label = Label(dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
 
-        init_label = Label(header_frame, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'Initiative')
-        name_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width*2, font=self.header_font, text=f'Name')
-        hp_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'HP')
-        ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text=f'AC')
-        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text=f'Notes / Conditions')
+        init_label = Label(header_frame, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text='Initiative')
+        name_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width*2, font=self.header_font, text='Name')
+        hp_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text='HP')
+        ac_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text='AC')
+        notes_label = Label(header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text='Notes / Conditions')
 
         scoreboard_frame.pack(anchor='c', expand=True, fill='both')
         button_frame.pack(side='top', fill='x', pady=10)
