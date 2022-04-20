@@ -11,6 +11,7 @@ class ScrollFrame(Frame):
 
         self.scrollbar.config(command=self.canvas.yview)
         self.canvas.bind('<Configure>', self.fill_canvas)
+        self.canvas.bind_all("<MouseWheel>", lambda event: self.canvas.yview_scroll(int(-1*(event.delta/120)), 'units'))
         Frame.__init__(self, frame)
         self.windows_item = self.canvas.create_window(0, 0, window=self, anchor='nw')
 
