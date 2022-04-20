@@ -1,4 +1,3 @@
-# Oh hell yeah
 from PIL import Image, ImageTk
 from random import randint
 from tkinter import Button, Entry, Frame, Label, messagebox, Text, Tk, Toplevel
@@ -128,8 +127,8 @@ class Tracker:
                 if row[0] == temp_frame:
                     temp_frame.destroy()
                     self.board.remove(row)
-
-            scrollframe.update()
+                    scrollframe.update()
+                    break
 
 
         def reset():
