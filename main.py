@@ -261,15 +261,18 @@ class Tracker:
         win.geometry('280x160+500+500')
         win.wm_attributes('-topmost', True)
         win.wm_transient(self.root)
+
+        header_label = Label(win, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Change colors:')
         
-        dice_var = StringVar(win, 'Black')
+        dice_var = StringVar(win, self.settings['dice_color'])
         dice_opts = ['Black', 'Blue', 'Green', 'Orange', 'Purple', 'Red', 'Turquoise', 'Yellow']
 
         dice_label = Label(win, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Dice Color:')
         dice_menu = OptionMenu(win, dice_var, *dice_opts, command=set_dice_color)
         
-        dice_label.pack(side='left', anchor='c', padx=5, pady=5)
-        dice_menu.pack(side='right', anchor='c', padx=5, pady=5)
+        header_label.pack(side='top', anchor='c', pady=5)
+        dice_label.pack(side='left', anchor='nw', padx=5, pady=7)
+        dice_menu.pack(side='right', anchor='ne', padx=5, pady=5)
         dice_menu.configure(font=self.button_font, width=50)
         dice_menu['menu'].configure(font=self.button_font)
     
