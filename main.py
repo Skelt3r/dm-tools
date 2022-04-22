@@ -1,7 +1,7 @@
 from pickle import dump, load
 from PIL import Image, ImageTk
 from random import randint
-from tkinter import Button, Entry, Frame, Label, messagebox, Text, Tk, Toplevel
+from tkinter import Button, Entry, Frame, Label, messagebox, OptionMenu, StringVar, Text, Tk, Toplevel
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from utils import ScrollFrame
 
@@ -10,7 +10,8 @@ class Tracker:
     def __init__(self):
         self.height = 4
         self.width = 8
-
+        
+        self.dice_color = 'black'
         self.bg_color = 'black'
         self.fg_color = 'white'
         
@@ -229,7 +230,43 @@ class Tracker:
         self.autosave()
     
 
-    def roll_dice(sides, label):
+    def settings(self):
+
+        def set_dice_color(_):
+            self.dice_color = dice_var.get()
+
+            self.d20_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d20.png').resize((100, 100)), master=self.dice_frame)
+            self.d12_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d12.png').resize((100, 100)), master=self.dice_frame)
+            self.d8_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d8.png').resize((100, 100)), master=self.dice_frame)
+            self.d6_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d6.png').resize((100, 100)), master=self.dice_frame)
+            self.d4_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d4.png').resize((100, 100)), master=self.dice_frame)
+
+            self.d20_button.configure(image=self.d20_image)
+            self.d12_button.configure(image=self.d12_image)
+            self.d8_button.configure(image=self.d8_image)
+            self.d6_button.configure(image=self.d6_image)
+            self.d4_button.configure(image=self.d4_image)
+
+        win = Toplevel(self.root, bg=self.bg_color)
+        win.resizable(0, 0)
+        win.title('Settings')
+        win.geometry('280x160+500+500')
+        win.wm_attributes('-topmost', True)
+        win.wm_transient(self.root)
+        
+        dice_var = StringVar(win, 'Black')
+        dice_opts = ['Black', 'Blue', 'Green', 'Orange', 'Purple', 'Red', 'Turquoise', 'Yellow']
+
+        dice_label = Label(win, bg=self.bg_color, fg=self.fg_color, font=self.button_font, text='Dice Color:')
+        dice_menu = OptionMenu(win, dice_var, *dice_opts, command=set_dice_color)
+        
+        dice_label.pack(side='left', anchor='c', padx=5, pady=5)
+        dice_menu.pack(side='right', anchor='c', padx=5, pady=5)
+        dice_menu.configure(font=self.button_font, width=50)
+        dice_menu['menu'].configure(font=self.button_font)
+    
+
+    def roll_dice(_, sides, label):
         label['text'] = randint(1, sides)
     
 
@@ -237,7 +274,7 @@ class Tracker:
         self.root = Tk()
         self.root.title('DM Tools')
         self.root.geometry(self.resolution)
-        self.root.iconphoto(True, ImageTk.PhotoImage(file='./images/d20.png'))
+        self.root.iconphoto(True, ImageTk.PhotoImage(file='./images/black/d20.png'))
         self.root.configure(bg=self.bg_color)
 
         self.bg_frame = Frame(self.root, bg=self.bg_color)
@@ -252,11 +289,11 @@ class Tracker:
         self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color, pady=10)
         self.button_frame = Frame(self.root, bg=self.bg_color)
 
-        self.d20_image = ImageTk.PhotoImage(Image.open('./images/d20.png').resize((100, 100)), master=self.dice_frame)
-        self.d12_image = ImageTk.PhotoImage(Image.open('./images/d12.png').resize((100, 100)), master=self.dice_frame)
-        self.d8_image = ImageTk.PhotoImage(Image.open('./images/d8.png').resize((100, 100)), master=self.dice_frame)
-        self.d6_image = ImageTk.PhotoImage(Image.open('./images/d6.png').resize((100, 100)), master=self.dice_frame)
-        self.d4_image = ImageTk.PhotoImage(Image.open('./images/d4.png').resize((100, 100)), master=self.dice_frame)
+        self.d20_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d20.png').resize((100, 100)), master=self.dice_frame)
+        self.d12_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d12.png').resize((100, 100)), master=self.dice_frame)
+        self.d8_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d8.png').resize((100, 100)), master=self.dice_frame)
+        self.d6_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d6.png').resize((100, 100)), master=self.dice_frame)
+        self.d4_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d4.png').resize((100, 100)), master=self.dice_frame)
 
         self.d20_button = Button(self.dice_frame, command=lambda: self.roll_dice(20, self.d20_label), bg=self.bg_color, image=self.d20_image)
         self.d12_button = Button(self.dice_frame, command=lambda: self.roll_dice(12, self.d12_label), bg=self.bg_color, image=self.d12_image)
@@ -264,11 +301,12 @@ class Tracker:
         self.d6_button = Button(self.dice_frame, command=lambda: self.roll_dice(6, self.d6_label), bg=self.bg_color, image=self.d6_image)
         self.d4_button = Button(self.dice_frame, command=lambda: self.roll_dice(4, self.d4_label), bg=self.bg_color, image=self.d4_image)
         
+        self.settings_button = Button(self.button_frame, command=lambda: self.settings(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Settings', pady=5)
         self.save_button = Button(self.button_frame, command=lambda: self.save_board(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Save', pady=5)
         self.load_button = Button(self.button_frame, command=lambda: self.load_board(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Load', pady=5)
         self.add_button = Button(self.button_frame, command=lambda: self.add_character(name='-'), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Add Character', pady=5)
         self.reset_button = Button(self.button_frame, command=lambda: self.reset(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Reset Initiative', pady=5)
-
+        
         self.d20_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         self.d12_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         self.d8_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
@@ -301,6 +339,7 @@ class Tracker:
         self.ac_label.pack(side='left', anchor='s')
         self.notes_label.pack(side='left', anchor='s')
         
+        self.settings_button.pack(side='left', anchor='c', expand=True, fill='x')
         self.save_button.pack(side='left', anchor='c', expand=True, fill='x')
         self.load_button.pack(side='left', anchor='c', expand=True, fill='x')
         self.add_button.pack(side='left', anchor='c', expand=True, fill='x')
