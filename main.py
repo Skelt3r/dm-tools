@@ -149,6 +149,15 @@ class Tracker:
     
     
     def generate_character_row(self, init=0, name='-', hp=0, ac=0, notes=''):
+
+        def save_notes(textbox):
+            for row in self.board:
+                if textbox in row:
+                    index = self.board.index(row)
+                    self.data[index][-1] = notes_textbox.get('1.0', 'end').rstrip('\n')
+                    self.autosave()
+                    break
+
         temp_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
         arrow_frame = Frame(temp_frame, bg=self.bg_color)
 
@@ -162,12 +171,13 @@ class Tracker:
         
         notes_textbox = Text(temp_frame, bd=4, relief='ridge', bg=self.bg_color, fg=self.fg_color, insertbackground=self.fg_color, padx=5, pady=5, height=self.height, width=self.width*6, font=self.button_font)
 
-        init_button.config(command=lambda b=init_button: self.set_value(b, 'Enter an initiative value', True))
-        name_button.config(command=lambda b=name_button: self.set_value(b, 'Enter a character name:'))
-        hp_button.config(command=lambda b=hp_button: self.set_value(b, 'Enter an HP value:', True))
-        ac_button.config(command=lambda b=ac_button: self.set_value(b, 'Enter an AC value:', True))
+        init_button.configure(command=lambda b=init_button: self.set_value(b, 'Enter an initiative value', True))
+        name_button.configure(command=lambda b=name_button: self.set_value(b, 'Enter a character name:'))
+        hp_button.configure(command=lambda b=hp_button: self.set_value(b, 'Enter an HP value:', True))
+        ac_button.configure(command=lambda b=ac_button: self.set_value(b, 'Enter an AC value:', True))
 
         notes_textbox.insert('1.0', notes)
+        notes_textbox.bind('<KeyRelease>', lambda _, t=notes_textbox: save_notes(t))
         
         temp_frame.pack(side='top')
         arrow_frame.pack(side='left')
