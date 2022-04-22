@@ -11,10 +11,6 @@ class Tracker:
         self.height = 4
         self.width = 8
         
-        self.dice_color = 'black'
-        self.bg_color = 'black'
-        self.fg_color = 'white'
-        
         self.button_font = ('Arial', 16, 'bold')
         self.large_button_font = ('Arial', 28, 'bold')
         self.header_font = ('Arial', 16, 'bold', 'underline')
@@ -38,6 +34,12 @@ class Tracker:
                 self.data = load(loadfile)
         except FileNotFoundError:
             self.data = [[0, '-', 0, 0, '']]*4
+        
+        try:
+            with open('settings.dat', 'rb') as settingsfile:
+                self.settings = load(settingsfile)
+        except FileNotFoundError:
+            self.settings = {'dice_color': 'black', 'bg_color': 'black', 'fg_color': 'white'}
 
     
     def save_board(self):
@@ -159,18 +161,18 @@ class Tracker:
                     self.autosave()
                     break
 
-        temp_frame = Frame(self.scoreboard_frame, bg=self.bg_color)
-        arrow_frame = Frame(temp_frame, bg=self.bg_color)
+        temp_frame = Frame(self.scoreboard_frame, bg=self.settings['bg_color'])
+        arrow_frame = Frame(temp_frame, bg=self.settings['bg_color'])
 
-        up_arrow = Button(arrow_frame, command=lambda tf=temp_frame: self.move_up(tf), bg=self.bg_color, fg=self.fg_color, text='▲')
-        down_arrow = Button(arrow_frame, command=lambda tf=temp_frame: self.move_down(tf), bg=self.bg_color, fg=self.fg_color, text='▼')
-        init_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=init)
-        name_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width*2, font=self.button_font, text=name)
-        hp_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=hp)
-        ac_button = Button(temp_frame, bg=self.bg_color, fg=self.fg_color, height=self.height, width=self.width, font=self.button_font, text=ac)
-        x_button = Button(temp_frame, command=lambda tf=temp_frame: self.remove_character(tf), bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='X', padx=10, pady=5)
+        up_arrow = Button(arrow_frame, command=lambda tf=temp_frame: self.move_up(tf), bg=self.settings['bg_color'], fg=self.settings['fg_color'], text='▲')
+        down_arrow = Button(arrow_frame, command=lambda tf=temp_frame: self.move_down(tf), bg=self.settings['bg_color'], fg=self.settings['fg_color'], text='▼')
+        init_button = Button(temp_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height, width=self.width, font=self.button_font, text=init)
+        name_button = Button(temp_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height, width=self.width*2, font=self.button_font, text=name)
+        hp_button = Button(temp_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height, width=self.width, font=self.button_font, text=hp)
+        ac_button = Button(temp_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height, width=self.width, font=self.button_font, text=ac)
+        x_button = Button(temp_frame, command=lambda tf=temp_frame: self.remove_character(tf), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='X', padx=10, pady=5)
         
-        notes_textbox = Text(temp_frame, bd=4, relief='ridge', bg=self.bg_color, fg=self.fg_color, insertbackground=self.fg_color, padx=5, pady=5, height=self.height, width=self.width*6, font=self.button_font)
+        notes_textbox = Text(temp_frame, bd=4, relief='ridge', bg=self.settings['bg_color'], fg=self.settings['fg_color'], insertbackground=self.settings['fg_color'], padx=5, pady=5, height=self.height, width=self.width*6, font=self.button_font)
 
         init_button.configure(command=lambda b=init_button: self.set_value(b, 'Enter an initiative value', True))
         name_button.configure(command=lambda b=name_button: self.set_value(b, 'Enter a character name:'))
@@ -230,16 +232,20 @@ class Tracker:
         self.autosave()
     
 
-    def settings(self):
+    def open_settings(self):
+
+        def save_settings():
+            with open('settings.dat', 'wb') as savefile:
+                dump(self.settings, savefile)
 
         def set_dice_color(_):
-            self.dice_color = dice_var.get()
+            self.settings['dice_color'] = dice_var.get()
 
-            self.d20_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d20.png').resize((100, 100)), master=self.dice_frame)
-            self.d12_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d12.png').resize((100, 100)), master=self.dice_frame)
-            self.d8_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d8.png').resize((100, 100)), master=self.dice_frame)
-            self.d6_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d6.png').resize((100, 100)), master=self.dice_frame)
-            self.d4_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d4.png').resize((100, 100)), master=self.dice_frame)
+            self.d20_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d20.png').resize((100, 100)), master=self.dice_frame)
+            self.d12_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d12.png').resize((100, 100)), master=self.dice_frame)
+            self.d8_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d8.png').resize((100, 100)), master=self.dice_frame)
+            self.d6_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d6.png').resize((100, 100)), master=self.dice_frame)
+            self.d4_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d4.png').resize((100, 100)), master=self.dice_frame)
 
             self.d20_button.configure(image=self.d20_image)
             self.d12_button.configure(image=self.d12_image)
@@ -247,7 +253,9 @@ class Tracker:
             self.d6_button.configure(image=self.d6_image)
             self.d4_button.configure(image=self.d4_image)
 
-        win = Toplevel(self.root, bg=self.bg_color)
+            save_settings()
+
+        win = Toplevel(self.root, bg=self.settings['bg_color'])
         win.resizable(0, 0)
         win.title('Settings')
         win.geometry('280x160+500+500')
@@ -257,7 +265,7 @@ class Tracker:
         dice_var = StringVar(win, 'Black')
         dice_opts = ['Black', 'Blue', 'Green', 'Orange', 'Purple', 'Red', 'Turquoise', 'Yellow']
 
-        dice_label = Label(win, bg=self.bg_color, fg=self.fg_color, font=self.button_font, text='Dice Color:')
+        dice_label = Label(win, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Dice Color:')
         dice_menu = OptionMenu(win, dice_var, *dice_opts, command=set_dice_color)
         
         dice_label.pack(side='left', anchor='c', padx=5, pady=5)
@@ -275,49 +283,49 @@ class Tracker:
         self.root.title('DM Tools')
         self.root.geometry(self.resolution)
         self.root.iconphoto(True, ImageTk.PhotoImage(file='./images/black/d20.png'))
-        self.root.configure(bg=self.bg_color)
+        self.root.configure(bg=self.settings['bg_color'])
 
-        self.bg_frame = Frame(self.root, bg=self.bg_color)
-        self.dice_frame = Frame(self.bg_frame, bg=self.bg_color)
-        self.header_frame = Frame(self.bg_frame, bg=self.bg_color, padx=15)
+        self.bg_frame = Frame(self.root, bg=self.settings['bg_color'])
+        self.dice_frame = Frame(self.bg_frame, bg=self.settings['bg_color'])
+        self.header_frame = Frame(self.bg_frame, bg=self.settings['bg_color'], padx=15)
 
         self.bg_frame.pack(expand=True, fill='both')
         self.dice_frame.pack(side='left', padx=10)
         self.header_frame.pack(side='top')
 
         self.scrollframe = ScrollFrame(self.bg_frame)
-        self.scoreboard_frame = Frame(self.scrollframe, bg=self.bg_color, pady=10)
-        self.button_frame = Frame(self.root, bg=self.bg_color)
+        self.scoreboard_frame = Frame(self.scrollframe, bg=self.settings['bg_color'], pady=10)
+        self.button_frame = Frame(self.root, bg=self.settings['bg_color'])
 
-        self.d20_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d20.png').resize((100, 100)), master=self.dice_frame)
-        self.d12_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d12.png').resize((100, 100)), master=self.dice_frame)
-        self.d8_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d8.png').resize((100, 100)), master=self.dice_frame)
-        self.d6_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d6.png').resize((100, 100)), master=self.dice_frame)
-        self.d4_image = ImageTk.PhotoImage(Image.open(f'./images/{self.dice_color}/d4.png').resize((100, 100)), master=self.dice_frame)
+        self.d20_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d20.png').resize((100, 100)), master=self.dice_frame)
+        self.d12_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d12.png').resize((100, 100)), master=self.dice_frame)
+        self.d8_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d8.png').resize((100, 100)), master=self.dice_frame)
+        self.d6_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d6.png').resize((100, 100)), master=self.dice_frame)
+        self.d4_image = ImageTk.PhotoImage(Image.open(f'./images/{self.settings["dice_color"]}/d4.png').resize((100, 100)), master=self.dice_frame)
 
-        self.d20_button = Button(self.dice_frame, command=lambda: self.roll_dice(20, self.d20_label), bg=self.bg_color, image=self.d20_image)
-        self.d12_button = Button(self.dice_frame, command=lambda: self.roll_dice(12, self.d12_label), bg=self.bg_color, image=self.d12_image)
-        self.d8_button = Button(self.dice_frame, command=lambda: self.roll_dice(8, self.d8_label), bg=self.bg_color, image=self.d8_image)
-        self.d6_button = Button(self.dice_frame, command=lambda: self.roll_dice(6, self.d6_label), bg=self.bg_color, image=self.d6_image)
-        self.d4_button = Button(self.dice_frame, command=lambda: self.roll_dice(4, self.d4_label), bg=self.bg_color, image=self.d4_image)
+        self.d20_button = Button(self.dice_frame, command=lambda: self.roll_dice(20, self.d20_label), bg=self.settings['bg_color'], image=self.d20_image)
+        self.d12_button = Button(self.dice_frame, command=lambda: self.roll_dice(12, self.d12_label), bg=self.settings['bg_color'], image=self.d12_image)
+        self.d8_button = Button(self.dice_frame, command=lambda: self.roll_dice(8, self.d8_label), bg=self.settings['bg_color'], image=self.d8_image)
+        self.d6_button = Button(self.dice_frame, command=lambda: self.roll_dice(6, self.d6_label), bg=self.settings['bg_color'], image=self.d6_image)
+        self.d4_button = Button(self.dice_frame, command=lambda: self.roll_dice(4, self.d4_label), bg=self.settings['bg_color'], image=self.d4_image)
         
-        self.settings_button = Button(self.button_frame, command=lambda: self.settings(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Settings', pady=5)
-        self.save_button = Button(self.button_frame, command=lambda: self.save_board(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Save', pady=5)
-        self.load_button = Button(self.button_frame, command=lambda: self.load_board(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Load', pady=5)
-        self.add_button = Button(self.button_frame, command=lambda: self.add_character(name='-'), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Add Character', pady=5)
-        self.reset_button = Button(self.button_frame, command=lambda: self.reset(), bg=self.bg_color, fg=self.fg_color, bd=5, relief='ridge', font=self.large_button_font, text='Reset Initiative', pady=5)
+        self.settings_button = Button(self.button_frame, command=lambda: self.open_settings(), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=5, relief='ridge', font=self.large_button_font, text='Settings', pady=5)
+        self.save_button = Button(self.button_frame, command=lambda: self.save_board(), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=5, relief='ridge', font=self.large_button_font, text='Save', pady=5)
+        self.load_button = Button(self.button_frame, command=lambda: self.load_board(), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=5, relief='ridge', font=self.large_button_font, text='Load', pady=5)
+        self.add_button = Button(self.button_frame, command=lambda: self.add_character(name='-'), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=5, relief='ridge', font=self.large_button_font, text='Add Character', pady=5)
+        self.reset_button = Button(self.button_frame, command=lambda: self.reset(), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=5, relief='ridge', font=self.large_button_font, text='Reset Initiative', pady=5)
         
-        self.d20_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        self.d12_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        self.d8_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        self.d6_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
-        self.d4_label = Label(self.dice_frame, bg=self.bg_color, fg=self.fg_color, bd=2, relief='ridge', font=self.button_font, text='-', width=8)
+        self.d20_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
+        self.d12_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
+        self.d8_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
+        self.d6_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
+        self.d4_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
 
-        self.init_label = Label(self.header_frame, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text='Initiative')
-        self.name_label = Label(self.header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width*2, font=self.header_font, text='Name')
-        self.hp_label = Label(self.header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text='HP')
-        self.ac_label = Label(self.header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=self.width, font=self.header_font, text='AC')
-        self.notes_label = Label(self.header_frame, bd=4, bg=self.bg_color, fg=self.fg_color, height=self.height//2, width=49, font=self.header_font, text='Notes / Conditions')
+        self.init_label = Label(self.header_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width, font=self.header_font, text='Initiative')
+        self.name_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width*2, font=self.header_font, text='Name')
+        self.hp_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width, font=self.header_font, text='HP')
+        self.ac_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width, font=self.header_font, text='AC')
+        self.notes_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=49, font=self.header_font, text='Notes / Conditions')
 
         self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
         self.button_frame.pack(side='top', fill='x', pady=10)
