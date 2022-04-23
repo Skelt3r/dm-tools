@@ -237,6 +237,14 @@ class Tracker:
         def save_settings():
             with open('settings.dat', 'wb') as savefile:
                 dump(self.settings, savefile)
+        
+
+        def reboot():
+            self.root.destroy()
+            save_settings()
+            tracker.__init__()
+            tracker.main(restart=True)
+
 
         def set_dice_color(_):
             self.settings['dice_color'] = dice_var.get()
@@ -255,48 +263,82 @@ class Tracker:
 
             save_settings()
 
+
+        def set_bg_color(_):
+            self.settings['bg_color'] = bg_var.get().lower()
+            reboot()
+
+
+        def set_fg_color(_):
+            self.settings['fg_color'] = fg_var.get().lower()
+            reboot()
+
+
         win = Toplevel(self.root, bg=self.settings['bg_color'])
         win.resizable(0, 0)
         win.title('Settings')
-        win.geometry('280x160+500+500')
+        win.geometry('320x200+500+500')
         win.wm_attributes('-topmost', True)
         win.wm_transient(self.root)
 
         header_label = Label(win, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Change colors:')
         
         dice_var = StringVar(win, self.settings['dice_color'])
-        dice_opts = ['Black', 'Blue', 'Green', 'Orange', 'Purple', 'Red', 'Turquoise', 'Yellow']
+        bg_var = StringVar(win, self.settings['bg_color'].title())
+        fg_var = StringVar(win, self.settings['fg_color'].title())
 
-        dice_label = Label(win, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Dice Color:')
-        dice_menu = OptionMenu(win, dice_var, *dice_opts, command=set_dice_color)
+        dice_opts = ['Black', 'Blue', 'Green', 'Orange', 'Purple', 'Red', 'Turquoise', 'Yellow']
+        tk_opts = ['Black', 'Blue', 'Cyan', 'Gray', 'Green', 'Hot Pink', 'Lime Green', 'Navy', 'Orange', 'Purple', 'Red', 'Yellow']
+
+        label_frame = Frame(win, bg=self.settings['bg_color'])
+        menu_frame = Frame(win, bg=self.settings['bg_color'])
+
+        dice_label = Label(label_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Dice:')
+        bg_label = Label(label_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Background:')
+        fg_label = Label(label_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Foreground:')
+
+        dice_menu = OptionMenu(menu_frame, dice_var, *dice_opts, command=set_dice_color)
+        bg_menu = OptionMenu(menu_frame, bg_var, *tk_opts, command=set_bg_color)
+        fg_menu = OptionMenu(menu_frame, fg_var, *tk_opts, command=set_fg_color)
         
-        header_label.pack(side='top', anchor='c', pady=5)
-        dice_label.pack(side='left', anchor='nw', padx=5, pady=7)
-        dice_menu.pack(side='right', anchor='ne', padx=5, pady=5)
-        dice_menu.configure(font=self.button_font, width=50)
+        dice_menu.configure(font=self.button_font, width=10)
+        bg_menu.configure(font=self.button_font, width=10)
+        fg_menu.configure(font=self.button_font, width=10)
         dice_menu['menu'].configure(font=self.button_font)
+        bg_menu['menu'].configure(font=self.button_font)
+        fg_menu['menu'].configure(font=self.button_font)
+
+        header_label.pack(side='top', anchor='c', pady=5)
+        label_frame.pack(side='left', anchor='c')
+        menu_frame.pack(side='right', anchor='c')
+        dice_label.pack(side='top', anchor='e', padx=5, pady=5)
+        bg_label.pack(side='top', anchor='e', padx=5, pady=5)
+        fg_label.pack(side='top', anchor='e', padx=5, pady=5)
+        dice_menu.pack(side='top', anchor='w', padx=5, pady=5)
+        bg_menu.pack(side='top', anchor='w', padx=5, pady=5)
+        fg_menu.pack(side='top', anchor='w', padx=5, pady=5)
     
 
     def roll_dice(_, sides, label):
         label['text'] = randint(1, sides)
     
 
-    def main(self):
+    def main(self, restart=False):
         self.root = Tk()
         self.root.title('DM Tools')
         self.root.geometry(self.resolution)
         self.root.iconphoto(True, ImageTk.PhotoImage(file='./images/black/d20.png'))
         self.root.configure(bg=self.settings['bg_color'])
 
-        self.bg_frame = Frame(self.root, bg=self.settings['bg_color'])
-        self.dice_frame = Frame(self.bg_frame, bg=self.settings['bg_color'])
-        self.header_frame = Frame(self.bg_frame, bg=self.settings['bg_color'], padx=15)
+        self.menu_frame = Frame(self.root, bg=self.settings['bg_color'])
+        self.dice_frame = Frame(self.menu_frame, bg=self.settings['bg_color'])
+        self.header_frame = Frame(self.menu_frame, bg=self.settings['bg_color'], padx=15)
 
-        self.bg_frame.pack(expand=True, fill='both')
+        self.menu_frame.pack(expand=True, fill='both')
         self.dice_frame.pack(side='left', padx=10)
         self.header_frame.pack(side='top')
 
-        self.scrollframe = ScrollFrame(self.bg_frame)
+        self.scrollframe = ScrollFrame(self.menu_frame, self.settings['bg_color'])
         self.scoreboard_frame = Frame(self.scrollframe, bg=self.settings['bg_color'], pady=10)
         self.button_frame = Frame(self.root, bg=self.settings['bg_color'])
 
@@ -356,8 +398,8 @@ class Tracker:
         self.add_button.pack(side='left', anchor='c', expand=True, fill='x')
         self.reset_button.pack(side='left', anchor='c', expand=True, fill='x')
 
-        for row in self.data:
-            self.load_character(*row)
+        for row in self.data: self.load_character(*row)
+        if restart: self.open_settings()
 
         self.root.mainloop()
     
