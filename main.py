@@ -286,7 +286,7 @@ class Tracker:
         fg_var = StringVar(win, self.settings['fg_color'].title())
 
         dice_opts = ['Black', 'Blue', 'Green', 'Orange', 'Purple', 'Red', 'Turquoise', 'Yellow']
-        tk_opts = ['Black', 'Blue', 'Cyan', 'Gray', 'Green', 'Hot Pink', 'Lime Green', 'Navy', 'Orange', 'Purple', 'Red', 'Yellow']
+        tk_opts = ['Black', 'Blue', 'Cyan', 'Gray', 'Green', 'Hot Pink', 'Lime Green', 'Navy', 'Orange', 'Purple', 'Red', 'Yellow', 'White']
 
         label_frame = Frame(win, bg=self.settings['bg_color'])
         menu_frame = Frame(win, bg=self.settings['bg_color'])
