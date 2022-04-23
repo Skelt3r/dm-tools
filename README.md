@@ -9,11 +9,11 @@ Dice art by [Aeynit](https://aeynit.itch.io/fantasy-dices-pack).
 - Tracker for initiative and primary stats
 - Dice roller
 - Auto and manual save/load states
+- Color customization for dice icons, background, and font color
 
 ---
 
 ### Things to be added:
 - Round counter
-- Color customization
 - Pop-out dice roller with advanced features (modifiers, multiple dice rolls, sums, etc.)
 - ???
