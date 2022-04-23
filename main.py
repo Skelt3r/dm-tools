@@ -359,6 +359,7 @@ class Tracker:
         self.add_button = Button(self.button_frame, command=lambda: self.add_character(name='-'), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=5, relief='ridge', font=self.large_button_font, text='Add Character', pady=5)
         self.reset_button = Button(self.button_frame, command=lambda: self.reset(), bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=5, relief='ridge', font=self.large_button_font, text='Reset Initiative', pady=5)
         
+        self.filler_label = Label(self.dice_frame, bg=self.settings['bg_color'], height=3)
         self.d20_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         self.d12_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         self.d8_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
@@ -374,9 +375,12 @@ class Tracker:
 
         self.round_box = Spinbox(self.header_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], width=3, font=self.button_font, insertbackground=self.settings['fg_color'], justify='center', from_=0, to=99)
         
+        self.header_frame.tkraise(self.scrollframe)
+        
         self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
         self.button_frame.pack(side='top', fill='x', pady=10)
-
+        
+        self.filler_label.pack()
         self.d20_button.pack(pady=10)
         self.d20_label.pack()
         self.d12_button.pack(pady=10)
