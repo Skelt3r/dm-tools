@@ -1,7 +1,7 @@
 from pickle import dump, load
 from PIL import Image, ImageTk
 from random import randint
-from tkinter import Button, Entry, Frame, Label, messagebox, OptionMenu, StringVar, Text, Tk, Toplevel
+from tkinter import Button, Entry, Frame, Label, messagebox, OptionMenu, Spinbox, StringVar, Text, Tk, Toplevel
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from utils import ScrollFrame
 
@@ -280,8 +280,6 @@ class Tracker:
         win.geometry('320x200+500+500')
         win.wm_attributes('-topmost', True)
         win.wm_transient(self.root)
-
-        header_label = Label(win, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Change colors:')
         
         dice_var = StringVar(win, self.settings['dice_color'])
         bg_var = StringVar(win, self.settings['bg_color'].title())
@@ -293,6 +291,7 @@ class Tracker:
         label_frame = Frame(win, bg=self.settings['bg_color'])
         menu_frame = Frame(win, bg=self.settings['bg_color'])
 
+        header_label = Label(win, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Change colors:')
         dice_label = Label(label_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Dice:')
         bg_label = Label(label_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Background:')
         fg_label = Label(label_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], font=self.button_font, text='Foreground:')
@@ -366,12 +365,15 @@ class Tracker:
         self.d6_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
         self.d4_label = Label(self.dice_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], bd=2, relief='ridge', font=self.button_font, text='-', width=8)
 
-        self.init_label = Label(self.header_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width, font=self.header_font, text='Initiative')
-        self.name_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width*2, font=self.header_font, text='Name')
-        self.hp_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width, font=self.header_font, text='HP')
-        self.ac_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=self.width, font=self.header_font, text='AC')
-        self.notes_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, width=49, font=self.header_font, text='Notes / Conditions')
+        self.init_label = Label(self.header_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, font=self.header_font, text='Initiative')
+        self.name_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, font=self.header_font, text='Name')
+        self.hp_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, font=self.header_font, text='HP')
+        self.ac_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, font=self.header_font, text='AC')
+        self.notes_label = Label(self.header_frame, bd=4, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, font=self.header_font, text='Notes / Conditions')
+        self.round_label = Label(self.header_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], height=self.height//2, font=self.header_font, text='Round:')
 
+        self.round_box = Spinbox(self.header_frame, bg=self.settings['bg_color'], fg=self.settings['fg_color'], width=3, font=self.button_font, insertbackground=self.settings['fg_color'], justify='center', from_=0, to=99)
+        
         self.scoreboard_frame.pack(anchor='c', expand=True, fill='both')
         self.button_frame.pack(side='top', fill='x', pady=10)
 
@@ -386,11 +388,13 @@ class Tracker:
         self.d4_button.pack(pady=10)
         self.d4_label.pack()
 
-        self.init_label.pack(side='left', anchor='s')
-        self.name_label.pack(side='left', anchor='s')
-        self.hp_label.pack(side='left', anchor='s')
-        self.ac_label.pack(side='left', anchor='s')
-        self.notes_label.pack(side='left', anchor='s')
+        self.init_label.pack(side='left', anchor='s', padx=60)
+        self.name_label.pack(side='left', anchor='s', padx=30)
+        self.hp_label.pack(side='left', anchor='s', padx=75)
+        self.ac_label.pack(side='left', anchor='s', padx=5)
+        self.notes_label.pack(side='left', anchor='s', padx=190)
+        self.round_box.pack(side='right', anchor='e', padx=5)
+        self.round_label.pack(side='right', anchor='e', padx=5)
         
         self.settings_button.pack(side='left', anchor='c', expand=True, fill='x')
         self.save_button.pack(side='left', anchor='c', expand=True, fill='x')
