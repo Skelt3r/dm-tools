@@ -337,7 +337,7 @@ class Tracker:
         self.dice_frame.pack(side='left', padx=10)
         self.header_frame.pack(side='top')
 
-        self.scrollframe = ScrollFrame(self.menu_frame, self.settings['bg_color'])
+        self.scrollframe = ScrollFrame(self.menu_frame)
         self.scoreboard_frame = Frame(self.scrollframe, bg=self.settings['bg_color'], pady=10)
         self.button_frame = Frame(self.root, bg=self.settings['bg_color'])
 
